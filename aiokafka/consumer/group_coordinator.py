@@ -703,9 +703,11 @@ class GroupCoordinator(BaseCoordinator):
 
         # We will not attempt rejoin if there is no activity on consumer
         idle_time = self._subscription.fetcher_idle_time
+
         if idle_time >= self._max_poll_interval:
-            yield from asyncio.sleep(self._retry_backoff_ms / 1000)
-            return None
+            log.warning(f"sx idle time would have been executed in active group")
+            # yield from asyncio.sleep(self._retry_backoff_ms / 1000)
+            # return None
 
         # We will only try to perform the rejoin once. If it fails,
         # we will spin this loop another time, checking for coordinator
@@ -780,7 +782,8 @@ class GroupCoordinator(BaseCoordinator):
                     sleep_time,
                     self._max_poll_interval - idle_time)
             else:
-                yield from self._maybe_leave_group()
+                log.warning(f"sx idle time would have been executed in heartbeat")
+                # yield from self._maybe_leave_group()
 
         log.debug("Stopping heartbeat task")
 

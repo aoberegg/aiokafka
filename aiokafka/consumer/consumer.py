@@ -1159,10 +1159,12 @@ class AIOKafkaConsumer(object):
         self._coordinator.check_errors()
 
         timeout = timeout_ms / 1000
+
         with self._subscription.fetch_context():
             records = yield from self._fetcher.fetched_records(
                 partitions, timeout,
                 max_records=max_records or self._max_poll_records)
+        log.warning(f"sx fetched records len records {len(records)}")
         return records
 
     def pause(self, *partitions):
